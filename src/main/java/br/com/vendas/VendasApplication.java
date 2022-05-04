@@ -1,28 +1,24 @@
 package br.com.vendas;
 
 import br.com.vendas.domain.entity.Cliente;
-import br.com.vendas.domain.entity.Pedido;
 import br.com.vendas.domain.repository.ClientesRepository;
-import br.com.vendas.domain.repository.Pedidos;
+import br.com.vendas.domain.repository.PedidosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
 @SpringBootApplication
 public class VendasApplication {
 
     @Bean
     public CommandLineRunner init(@Autowired ClientesRepository clientes,
-                                  @Autowired Pedidos pedidosRepository) {
+                                  @Autowired PedidosRepository pedidosRepository) {
         return args -> {
 //            System.out.println("Salvando Clientes");
             Cliente monica = new Cliente("Monica");
+            monica.setCpf("52461899999");
             clientes.save(monica);
 //            clientes.save(new Cliente("Serena"));
 //            clientes.save(new Cliente("Pedro"));
