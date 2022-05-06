@@ -10,6 +10,7 @@ public class ItemPedido {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
+
     @ManyToOne
     @JoinColumn(name = "pedido_id")
     private Pedido pedido;

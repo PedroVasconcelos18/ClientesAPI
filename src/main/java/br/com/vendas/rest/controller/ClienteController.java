@@ -20,7 +20,7 @@ import java.util.Optional;
 public class ClienteController {
 
     @Autowired
-    ClientesRepository clientesRepository;
+    private ClientesRepository clientesRepository;
 
     @GetMapping("{id}")
     public Cliente getClienteById( @PathVariable Integer id ) {
