@@ -1,10 +1,15 @@
 package br.com.vendas.domain.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "produto")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Produto {
 
     @Id
@@ -42,3 +47,5 @@ public class Produto {
         this.preco = preco;
     }
 }
+
+

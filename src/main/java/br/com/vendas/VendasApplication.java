@@ -17,7 +17,8 @@ public class VendasApplication {
                                   @Autowired PedidosRepository pedidosRepository) {
         return args -> {
 //            System.out.println("Salvando Clientes");
-            Cliente monica = new Cliente("Monica");
+            Cliente monica = new Cliente();
+            monica.setNome("monica");
             monica.setCpf("52461899999");
             clientes.save(monica);
 //            clientes.save(new Cliente("Serena"));

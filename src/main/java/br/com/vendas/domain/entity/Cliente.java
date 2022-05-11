@@ -1,12 +1,16 @@
 package br.com.vendas.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity // quando a tabela tem o mesmo nome da entidade apenas a annotation Entity serve
 @Table(name = "cliente")//, schema = "nome do shcema")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Cliente {
 
     // Quando existe a annotation Entity na classe ela entende
@@ -27,50 +31,6 @@ public class Cliente {
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Pedido> pedidos;
-
-    public Set<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
-    
-    public Cliente() {
-    }
-
-    public Cliente(Integer id, String nome) {
-        this.id = id;
-        this.nome = nome;
-    }
-
-    public Cliente(String nome) {
-        this.nome = nome;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
 
     @Override
     public String toString() {
