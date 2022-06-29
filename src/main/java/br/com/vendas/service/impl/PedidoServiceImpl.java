@@ -27,21 +27,23 @@ import java.util.stream.Collectors;
 public class PedidoServiceImpl implements PedidoService {
 
 
+    @Autowired
     private final PedidosRepository pedidosRepository;
+    @Autowired
     private final ClientesRepository clientesRepository;
+    @Autowired
     private final ProdutosRepository produtosRepository;
+    @Autowired
     private final ItensPedidoRepository itensPedidoRepository;
 
-    @Autowired
-
-
     @Override
-    @Transactional // ou ele salva tudo ou se acontecer algum erro ele dá um rollback em tudo oq ocorreu no método ( garante a integridade )
+    @Transactional
+    // ou ele salva tudo ou se acontecer algum erro ele dá um rollback em tudo oq ocorreu no método ( garante a integridade )
     public Pedido salvar(PedidoDTO dto) {
         Integer idCliente = dto.getCliente();
         Cliente cliente = clientesRepository.
                 findById(idCliente)
-                .orElseThrow( () -> new RegraNegocioException("Código de cliente inválido"));
+                .orElseThrow(() -> new RegraNegocioException("Código de cliente inválido"));
 
 
         Pedido pedido = new Pedido();
@@ -60,15 +62,15 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     private List<ItemPedido> converterItems(Pedido pedido, List<ItemPedidoDTO> items) {
-        if(items.isEmpty()) {
-            throw  new RegraNegocioException("Não é possível realizar um pedido sem items.");
+        if (items.isEmpty()) {
+            throw new RegraNegocioException("Não é possível realizar um pedido sem items.");
         }
 
-        return items.stream().map( dto -> {
+        return items.stream().map(dto -> {
             Integer idProduto = dto.getProduto();
             Produto produto = produtosRepository
                     .findById(idProduto)
-                    .orElseThrow( () -> new RegraNegocioException("Código de produto inválido: " + idProduto));
+                    .orElseThrow(() -> new RegraNegocioException("Código de produto inválido: " + idProduto));
 
 
             ItemPedido itemPedido = new ItemPedido();
@@ -79,4 +81,10 @@ public class PedidoServiceImpl implements PedidoService {
             return itemPedido;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<Pedido> obterPedidoCompleto(Integer id) {
+        return pedidosRepository.findByIdFetchItens(id);
+   }
+
 }
