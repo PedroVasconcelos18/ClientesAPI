@@ -2,7 +2,9 @@ package br.com.vendas.rest.controller;
 
 import br.com.vendas.domain.entity.ItemPedido;
 import br.com.vendas.domain.entity.Pedido;
+import br.com.vendas.domain.enums.StatusPedido;
 import br.com.vendas.domain.repository.PedidosRepository;
+import br.com.vendas.rest.dto.AtualizacaoStatusPedidoDTO;
 import br.com.vendas.rest.dto.InformacaoItemPedidoDTO;
 import br.com.vendas.rest.dto.InformacoesPedidoDTO;
 import br.com.vendas.rest.dto.PedidoDTO;
@@ -38,7 +40,7 @@ public class PedidoController {
     @GetMapping("/{id}")
     public InformacoesPedidoDTO getById(@PathVariable Integer id) {
         return pedidoService.obterPedidoCompleto(id)
-                .map(p -> parseDTOtoEntity(p))
+                .map(this::parseDTOtoEntity)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado."));
     }
 
@@ -50,6 +52,7 @@ public class PedidoController {
                 .cpf(pedido.getCliente().getCpf())
                 .nomeCliente(pedido.getCliente().getNome())
                 .total(pedido.getTotal())
+                .status(pedido.getStatus().toString())
                 .items(converterItemPedidoDTOToInformacaoItemPedidoDTO(pedido.getItens()))
                 .build();
     }
@@ -67,6 +70,16 @@ public class PedidoController {
                         .build())
                 //pega a strem que retornamos e transforma em uma list
                 .collect(Collectors.toList());
+    }
+
+    @PatchMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateStatus(
+            @PathVariable Integer id,
+            @RequestBody AtualizacaoStatusPedidoDTO dto) {
+
+        pedidoService.atualizaStatus(id, StatusPedido.valueOf(dto.getNovoStatus()));
+
     }
 
 

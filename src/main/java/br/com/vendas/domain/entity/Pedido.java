@@ -1,5 +1,6 @@
 package br.com.vendas.domain.entity;
 
+import br.com.vendas.domain.enums.StatusPedido;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,6 +29,9 @@ public class Pedido {
 
     @Column(name = "total", precision = 20, scale = 2)
     private BigDecimal total;
+
+    @Enumerated(EnumType.STRING)
+    private StatusPedido status;
 
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens;

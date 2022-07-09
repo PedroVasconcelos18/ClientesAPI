@@ -4,10 +4,12 @@ import br.com.vendas.domain.entity.Cliente;
 import br.com.vendas.domain.entity.ItemPedido;
 import br.com.vendas.domain.entity.Pedido;
 import br.com.vendas.domain.entity.Produto;
+import br.com.vendas.domain.enums.StatusPedido;
 import br.com.vendas.domain.repository.ClientesRepository;
 import br.com.vendas.domain.repository.ItensPedidoRepository;
 import br.com.vendas.domain.repository.PedidosRepository;
 import br.com.vendas.domain.repository.ProdutosRepository;
+import br.com.vendas.exception.PedidoNaoEncontradoException;
 import br.com.vendas.exception.RegraNegocioException;
 import br.com.vendas.rest.dto.ItemPedidoDTO;
 import br.com.vendas.rest.dto.PedidoDTO;
@@ -50,6 +52,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDate.now());
         pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.REALIZADO);
 
         List<ItemPedido> itemPedidos = converterItems(pedido, dto.getItems());
 
@@ -86,5 +89,17 @@ public class PedidoServiceImpl implements PedidoService {
     public Optional<Pedido> obterPedidoCompleto(Integer id) {
         return pedidosRepository.findByIdFetchItens(id);
    }
+
+    @Override
+    @Transactional
+    public void atualizaStatus(Integer id, StatusPedido statusPedido)  {
+        pedidosRepository
+                .findById(id)
+                .map( pedido -> {
+                    pedido.setStatus(statusPedido);
+                    return pedidosRepository.save(pedido);
+                }).orElseThrow(PedidoNaoEncontradoException::new);
+    }
+
 
 }
