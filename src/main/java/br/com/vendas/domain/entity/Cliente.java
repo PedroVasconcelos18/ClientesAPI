@@ -1,7 +1,10 @@
 package br.com.vendas.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -19,14 +22,17 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id") //Mesma lógica da table, se o nome for o mesmo da coluna na base de dados, já faz a ligação automática
+    @Column(name = "id")
+    //Mesma lógica da table, se o nome for o mesmo da coluna na base de dados, já faz a ligação automática
     private Integer id;
 
     @Column(name = "nome", length = 100)
-    @NotEmpty(message = "Campo nome é obrigatório.")
+    @NotEmpty(message = "{campo.codigo-cliente.obrigatorio}")
     private String nome;
 
     @Column(name = "cpf", length = 11)
+    @NotEmpty(message = "{campo.cpf.obrigatorio}")
+    @CPF(message = "{campo.cpf.invalido}")
     private String cpf;
 
     // O FetchType.LAZY faz com que toda vez que se obtenha os clientes da base de dados ele n vai trazer o pedido

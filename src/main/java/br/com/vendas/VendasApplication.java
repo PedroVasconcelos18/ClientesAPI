@@ -1,6 +1,5 @@
 package br.com.vendas;
 
-import br.com.vendas.domain.entity.Cliente;
 import br.com.vendas.domain.repository.ClientesRepository;
 import br.com.vendas.domain.repository.PedidosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,10 @@ public class VendasApplication {
                                   @Autowired PedidosRepository pedidosRepository) {
         return args -> {
 //            System.out.println("Salvando Clientes");
-            Cliente monica = new Cliente();
-            monica.setNome("monica");
-            monica.setCpf("52461899999");
-            clientes.save(monica);
+//            Cliente monica = new Cliente();
+//            monica.setNome("monica");
+//            monica.setCpf("52461899999");
+//            clientes.save(monica);
 //            clientes.save(new Cliente("Serena"));
 //            clientes.save(new Cliente("Pedro"));
 
