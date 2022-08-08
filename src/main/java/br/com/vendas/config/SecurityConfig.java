@@ -1,5 +1,7 @@
 package br.com.vendas.config;
 
+import br.com.vendas.security.jwt.JwtAuthFilter;
+import br.com.vendas.security.jwt.JwtService;
 import br.com.vendas.service.impl.UsuarioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +10,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -17,9 +22,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public UsuarioServiceImpl usuarioService;
 
+    @Autowired
+    public JwtService jwtService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public OncePerRequestFilter jwtFilter() {
+        return new JwtAuthFilter(jwtService, usuarioService);
     }
 
     @Override
@@ -44,7 +57,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll()
                     .anyRequest().authenticated() // caso tenha esquecido de mapear alguma URL, esse trecho de código garante que pelo menos esteja logado para realizar a request
                 .and()
-                    .httpBasic();
+                    .sessionManagement()// definir que n vai mais criar sessões, cada requisição vai conter todos os elementos necessários para ela ocorrer
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+        
     }
 
 }

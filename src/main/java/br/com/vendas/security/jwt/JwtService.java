@@ -1,4 +1,4 @@
-package br.com.vendas;
+package br.com.vendas.security.jwt;
 
 import br.com.vendas.domain.entity.Usuario;
 import io.jsonwebtoken.Claims;
@@ -22,7 +22,7 @@ public class JwtService {
     private String expiracao;
 
     @Value("${security.jwt.chave-assinatura}")
-    private static String chaveAssinatura;
+    private String chaveAssinatura;
 
     public String gerarToken(Usuario usuario) {
         long expString = Long.valueOf(expiracao);
@@ -38,7 +38,7 @@ public class JwtService {
                 .compact(); // gera um token
     }
 
-    private static Claims obterClaims(String token) throws ExpiredJwtException {
+    private Claims obterClaims(String token) throws ExpiredJwtException {
         return Jwts
                     .parser()
                     .setSigningKey(chaveAssinatura)
@@ -61,20 +61,8 @@ public class JwtService {
         }
     }
 
-    public static String obterLoginUsuario(String token) throws ExpiredJwtException {
-        return (String) obterClaims(token).getSubject(); // subject está o login do usuario
+    public String obterLoginUsuario(String token) throws ExpiredJwtException {
+        return obterClaims(token).getSubject(); // subject está o login do usuario
     }
 
-    public static void main(String[] args) {
-        ConfigurableApplicationContext contexto = SpringApplication.run(VendasApplication.class);
-        JwtService service = contexto.getBean(JwtService.class);
-        Usuario usuario = Usuario.builder().login("pedro").build();
-        String token = service.gerarToken(usuario);
-        System.out.println(token);
-
-        boolean isTokenValido = service.tokenValido(token);
-        System.out.println("O token está válido? " + isTokenValido);
-        System.out.println(obterLoginUsuario(token));
-
-    }
 }
